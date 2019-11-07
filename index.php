@@ -2,28 +2,6 @@
 
 require 'vendor/autoload.php';
 
-/**
-    Imagine you have a bike and a driving license. You also found a job board with a list of companies offering a job. 
-    To get the job, you need to fulfill some requirements
-
-    "Company A" requires an apartment or house, and property insurance.
-    "Company B" requires 5 door car or 4 door car, and a driver's license and car insurance.
-    "Company C" requires a social security number and a work permit. 
-    "Company D" requires an apartment or a flat or a house.
-    "Company E" requires a driver's license and a 2 door car or a 3 door car or a 4 door car or a 5 door car.
-    "Company F" requires a scooter or a bike, or a motorcycle and a driver's license and motorcycle insurance.
-    "Company G" requires a massage qualification certificate and a liability insurance.
-    "Company H" requires a storage place or a garage.
-    "Company J" doesn't require anything, you can come and start working immediately.
-    "Company K" requires a PayPal account.
-    "Company L" requires a driving licence.
- */
-
- /**
-  Your task is to write code that will calculate for which companies you can work and for which you can't. 
-  You can convert the statements like "Company J requires PayPal account" to whatever form or structure you need
-*/
-
 use App\Works;
 
 class Job {
@@ -32,14 +10,20 @@ class Job {
     {
         $suitableWorks = [];
 
-        $works = str_replace([',', '.'], ['', ''], Works::getWorks());
+        $works = str_replace([',', '.'], ['', ''], Works::getWorks()); //clear comma and dots
 
-        foreach(explode(PHP_EOL, $works) as $work){
+        foreach(explode(PHP_EOL, $works) as $work){ //handle each line
+
+            if($this->checkNoRequirement($work)){ //check if the job has no requirements
+                $suitableWorks[] = $work;
+                continue;
+            }                
         
-            $requires = trim(substr($work, strpos($work, 'requires') + strlen('requires'), strlen($work)));
+            $requires = $this->getRequires($work);
 
             $hasAny = [];
-            if(!preg_match('/ and /', $requires)){
+
+            if(!preg_match('/ and /', $requires)){ //if no "and" statement exists
                 $hasAny = explode(" or ", $requires);
             }else{
                 $mustHave = explode(" and ", $requires);
@@ -48,30 +32,41 @@ class Job {
             if(count(array_intersect($hasAny, Works::getMyAbilities()))){
                 $suitableWorks[] = $work;
                 continue;
-            }
-            
+            }            
             
             foreach($mustHave as $have){
                 
-                $isOk = false;
+                $isFullfillAllRequirements = false;
+
                 foreach(Works::getMyAbilities() as $ability){
                     if(false !== strpos($have, $ability))
-                        $isOk = true;
+                        $isFullfillAllRequirements = true;
                 } 
                 
-                if(!$isOk)
+                if(!$isFullfillAllRequirements)
                     break;
 
             }
 
-            if($isOk){
+            if($isFullfillAllRequirements){
                 $suitableWorks[] = $work;
             }
         }
 
-        echo 'You can work the following jobs: '.PHP_EOL;
+        echo 'You can work on the following jobs: '.PHP_EOL;
         var_dump($suitableWorks);
         
+    }
+
+    private function checkNoRequirement($work)
+    {
+        /*if contains doesn't require add possible companies */
+        return strpos($work, "doesn't require anything") !== false || strpos($work, "does not require anything") !== false;
+    }
+
+    private function getRequires($work)
+    {
+        return trim(substr($work, strpos($work, 'requires') + strlen('requires'), strlen($work))); //get the sentence's last part after requires phrase...
     }
 }
 
