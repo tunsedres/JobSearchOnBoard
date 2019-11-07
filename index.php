@@ -50,15 +50,21 @@ class Job {
                 continue;
             }
             
+            
             foreach($mustHave as $have){
-                $isfalse= false;
+                
+                $isOk = false;
                 foreach(Works::getMyAbilities() as $ability){
                     if(false !== strpos($have, $ability))
-                        $isfalse = true;
+                        $isOk = true;
                 } 
+                
+                if(!$isOk)
+                    break;
+
             }
 
-            if($isfalse){
+            if($isOk){
                 $suitableWorks[] = $work;
             }
         }

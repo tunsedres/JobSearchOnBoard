@@ -7,7 +7,6 @@ class Works {
     {
         $list = 
         <<<EOT
-    "Company L" requires a driver's license and a bike.
     "Company A" requires an apartment or house, and property insurance.
     "Company B" requires 5 door car or 4 door car, and a driver's license and car insurance.
     "Company C" requires a social security number and a work permit. 
@@ -17,8 +16,9 @@ class Works {
     "Company G" requires a massage qualification certificate and a liability insurance.
     "Company H" requires a storage place or a garage.
     "Company J" doesn't require anything, you can come and start working immediately.
-    "Company K" requires a PayPal account or a driver's license.
+    "Company K" requires a PayPal account.
     "Company L" requires a driver's license.
+    "Company M" requires a driving licence.
 EOT;
 
         return $list;
@@ -27,7 +27,7 @@ EOT;
     public static function getMyAbilities()
     {
         return [
-            "a bike", "a driver's license", "2 door car"
+            "a bike", "a driver's license", "a driving licence", "a garage", "a liability insurance"
         ];
     }
 }
